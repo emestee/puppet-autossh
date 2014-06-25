@@ -23,7 +23,8 @@ under earlier 2.7+ versions.
 ## Usage
 
 This module creates a script in `/etc/init.d/autossh-tunnel-<name>` that starts
-and stops the tunnel. 
+and stops the tunnel. It is intended for use on the side of the tunnel that is *initiating* the connection.
+
 
 Before using this module, please read the manual for `ssh(1)` and particularly
 its `-L` option. Autossh itself has very few command line switches and most of
