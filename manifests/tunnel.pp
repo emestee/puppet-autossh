@@ -4,10 +4,9 @@
 # - ssh $remote_host to connect to, mandatory
 # - ssh $remote_user to connect as, defaults to $user
 # - ssh $remote_port to connect to, defaults to 22
-# - tunnel $port - local TCP port to listen on
-# - tunnel $bind_address - local IP address to listen on
-# - tunnel $host - remote host to forward the connections to
-# - tunnel $host_port - remote port to forward the connections to
+# - ssh $local_forwards
+# - ssh $remote_forwards
+# - ssh $dynamic_forwards
 # - autossh $monitor_port (-M parameter value), defaults to disabled, see autossh(1), this feature is not recommended for use
 # - autossh $gatetime, defaults to disabled, see autossh(1)
 # - autossh $first_poll, defaults to disabled, see autossh(1)
@@ -21,10 +20,9 @@ define autossh::tunnel (
   $remote_host,
   $remote_port  = '22',
   $remote_user  = 'absent',
-  $host         = 'localhost',
-  $port,
-  $bind_address = 'localhost',
-  $hostport,
+  $local_forwards = 'absent',
+  $remote_forwards = 'absent',
+  $dynamic_forwards = 'absent',
   $monitor_port = 'absent',
   $gatetime     = 'absent',
   $first_poll   = 'absent',
@@ -39,6 +37,10 @@ define autossh::tunnel (
     owner => 'root',
     group => 'root',
     mode  => '0644',
+  }
+
+  if ($local_forwards == 'absent' and $remote_forwards == 'absent' and $dynamic_forwards == 'absent') {
+	fail('At least one type of forwarding ($local_forwards, $remote_forwards, or $dynamic_forwards) must be specified for meaningful tunneling')
   }
 
   $ssh_remote_port = "-p ${remote_port}"

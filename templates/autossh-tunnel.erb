@@ -28,7 +28,17 @@ SCRIPTNAME=/etc/init.d/$NAME
 #
 # AutoSSH configuration
 #
-AUTOSSH_ARGS="-f -M <%= @real_monitor_port %> -N -L <%= @bind_address %>:<%= @port %>:<%= @host %>:<%= @hostport %> <%= @ssh_extra_options %> <%= @real_remote_user %>@<%= @remote_host %> <%= @ssh_remote_port %>"
+<%
+
+@forward_options = ""
+
+unless @remote_forwards == 'absent' then [@remote_forwards].flatten.each { |r| @forward_options << " -R #{r}" } end
+unless @local_forwards == 'absent' then [@local_forwards].flatten.each { |l| @forward_options << " -L #{l}" } end
+unless @dynamic_forwards == 'absent' then [@dynamic_forwards].flatten.each { |d| @forward_options << " -D #{d}" } end
+
+%>
+
+AUTOSSH_ARGS="-f -M <%= @real_monitor_port %> -N <%= @forward_options %> <%= @ssh_extra_options %> <%= @real_remote_user %>@<%= @remote_host %> <%= @ssh_remote_port %>"
 <% if @gatetime != 'absent' -%>
 AUTOSSH_GATETIME=<%= @gatetime %>
 <% end -%>
@@ -95,7 +105,7 @@ do_start()
 
 
     <% if @osfamily == 'Debian' -%>
-    start-stop-daemon -p "${PIDFILE}" -u "${USERNAME}" --start --exec ${DAEMON} -- ${AUTOSSH_ARGS} || return 2
+    start-stop-daemon -p "${PIDFILE}" -c "${USERNAME}" --start --exec ${DAEMON} -- ${AUTOSSH_ARGS} || return 2
     <% else -%>
     start_daemon -u "${USERNAME}" -p "$PIDFILE" "$DAEMON" "$AUTOSSH_ARGS" || return 2
     <% end -%>
