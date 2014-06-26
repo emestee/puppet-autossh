@@ -1,13 +1,30 @@
+# Define an autossh daemon instance by creating an init.d script that launches this configuration. 
+# Parameters:
+# - Local $user for the daemon and SSH processes
+# - ssh $remote_host to connect to, mandatory
+# - ssh $remote_user to connect as, defaults to $user
+# - ssh $remote_port to connect to, defaults to 22
+# - tunnel $port - local TCP port to listen on
+# - tunnel $bind_address - local IP address to listen on
+# - tunnel $host - remote host to forward the connections to
+# - tunnel $host_port - remote port to forward the connections to
+# - autossh $monitor_port (-M parameter value), defaults to disabled, see autossh(1), this feature is not recommended for use
+# - autossh $gatetime, defaults to disabled, see autossh(1)
+# - autossh $first_poll, defaults to disabled, see autossh(1)
+# - autossh $poll, defaults to disabled, see autossh(1)
+# - autossh $maxstart, defaults to disabled, see autossh(1)
+# - autossh $maxlifetime, defaults to disabled, see autossh(1)
+# - autossh $logfile, defaults to disabled
 define autossh::tunnel (
   $ensure       = 'present',
   $user,
-  $bind_address = 'localhost',
-  $port,
-  $host         = 'localhost',
-  $hostport,
   $remote_host,
   $remote_port  = '22',
   $remote_user  = 'absent',
+  $host         = 'localhost',
+  $port,
+  $bind_address = 'localhost',
+  $hostport,
   $monitor_port = 'absent',
   $gatetime     = 'absent',
   $first_poll   = 'absent',
