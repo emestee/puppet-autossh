@@ -1,22 +1,23 @@
 # Define an autossh daemon instance by creating an init.d script that launches this configuration. 
 # Parameters:
-# - Local $user for the daemon and SSH processes
+# - Local $user for the daemon and SSH client processes, default = root
 # - ssh $remote_host to connect to, mandatory
 # - ssh $remote_user to connect as, defaults to $user
 # - ssh $remote_port to connect to, defaults to 22
-# - ssh $local_forwards
-# - ssh $remote_forwards
-# - ssh $dynamic_forwards
+# - ssh $local_forwards - single entry or array in SSH -L format
+# - ssh $remote_forwards - single entry or array in SSH -R format
+# - ssh $dynamic_forwards - single entry or array in SSH -D format
 # - autossh $monitor_port (-M parameter value), defaults to disabled, see autossh(1), this feature is not recommended for use
 # - autossh $gatetime, defaults to disabled, see autossh(1)
 # - autossh $first_poll, defaults to disabled, see autossh(1)
 # - autossh $poll, defaults to disabled, see autossh(1)
 # - autossh $maxstart, defaults to disabled, see autossh(1)
 # - autossh $maxlifetime, defaults to disabled, see autossh(1)
-# - autossh $logfile, defaults to disabled
+# - autossh $autossh_logfile, defaults to disabled
+# - autossh $autossh_loglevel, 0-7, defaults to disabled
 define autossh::tunnel (
   $ensure       = 'present',
-  $user,
+  $user = 'root',
   $remote_host,
   $remote_port  = '22',
   $remote_user  = 'absent',
@@ -29,7 +30,8 @@ define autossh::tunnel (
   $poll         = 'absent',
   $maxstart     = 'absent',
   $maxlifetime  = 'absent',
-  $logfile      = 'absent'
+  $autossh_logfile      = 'absent',
+  $autossh_loglevel	= 'absent',
 ) {
   include autossh
 
